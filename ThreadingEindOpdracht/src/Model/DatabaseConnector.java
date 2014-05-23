@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class DatabaseConnector
   {
-    private static Connection connection;
+    public static Connection connection;
 
     public DatabaseConnector() throws ClassNotFoundException
       {

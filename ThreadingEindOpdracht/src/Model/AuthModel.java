@@ -1,9 +1,13 @@
 package Model;
 
+import static Model.DatabaseConnector.*;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +18,7 @@ public class AuthModel
 
     public String login(String username, String password)
       {
-        String salt = null; //get salt from db
+        String salt = getSalt(username);
 
         String hashedPass = hashPass(password, salt);
 
@@ -26,8 +30,22 @@ public class AuthModel
       {
         String salt = createSalt();
         String hashedPass = hashPass(password, salt);
+        PreparedStatement statement;
 
-        //save shit naar de db
+        String query = "INSERT INTO user (username, password, salt) VALUES (?,?,?)";
+
+        try
+          {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, hashedPass);
+            statement.setString(3, salt);
+            statement.executeUpdate();
+          }
+        catch (SQLException ex)
+          {
+            Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
+          }
       }
 
     public void logout()
@@ -76,4 +94,29 @@ public class AuthModel
         return salt;
       }
 
+    private String getSalt(String username)
+      {
+        String query = "SELECT salt FROM user WHERE username = ?" ;
+        String salt = "";
+        PreparedStatement statement;
+        
+        try
+          {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.executeQuery();
+
+            ResultSet result = statement.getResultSet();
+
+            while (result.next())
+              {
+                salt = result.getString("salt");
+              }
+          }
+        catch (SQLException ex)
+          {
+            Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        return salt;
+      }
   }
