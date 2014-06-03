@@ -19,10 +19,40 @@ public class AuthModel
     public String login(String username, String password)
       {
         String salt = getSalt(username);
-
-        String hashedPass = hashPass(password, salt);
-
-        String token = null; //make token if true
+        String inputPass = hashPass(password, salt);
+        String databasePass = null;
+        String token = null;
+        
+        String query = "SELECT password FROM user WHERE username = ?" ;
+        PreparedStatement statement;
+        
+        try
+          {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.executeQuery();
+            
+            ResultSet result = statement.getResultSet();
+             
+            while (result.next())
+              {
+                databasePass = result.getString("password");
+              }
+          }
+        catch (SQLException ex)
+          {
+            Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        
+        if(databasePass.equals(inputPass))
+          {
+            token = createToken();
+          }
+        else
+          {
+            token = null;
+          }
+        
         return token;
       }
 
@@ -118,5 +148,21 @@ public class AuthModel
             Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
           }
         return salt;
+      }
+    
+    private String createToken()
+      {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[10];
+        random.nextBytes(bytes);
+
+        for (int i = 0; i < bytes.length; i++)
+          {
+            stringBuilder.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+          }
+
+        String token = stringBuilder.toString();
+       
+        return token;
       }
   }

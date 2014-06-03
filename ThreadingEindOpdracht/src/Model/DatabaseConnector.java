@@ -11,7 +11,7 @@ public class DatabaseConnector
   {
     public static Connection connection;
 
-    public DatabaseConnector() throws ClassNotFoundException
+    public DatabaseConnector()
       {
         try
           {
@@ -25,7 +25,7 @@ public class DatabaseConnector
       }
 
     //open database connection
-    public void openConnection()
+    private void openConnection()
       {
         try
           {
