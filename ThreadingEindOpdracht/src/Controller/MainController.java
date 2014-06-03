@@ -1,7 +1,7 @@
 package Controller;
 
 import static Constanses.ServerConfig.*;
-import Model.WebServer;
+import Model.WebServer.WebServer;
 
 public class MainController
   {

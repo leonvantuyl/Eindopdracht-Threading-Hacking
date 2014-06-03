@@ -1,16 +1,16 @@
-package Model;
+package Model.ControlServer;
 
 import java.net.Socket;
 
-public class WebRequestHandler implements Runnable
+public class ControlServerHandler implements Runnable
   {
-    private final Socket socket;
+    private Socket socket;
     
-    WebRequestHandler(Socket socket)
+    public ControlServerHandler(Socket socket)
       {
         this.socket = socket;
       }
-
+    
     @Override
     public void run()
       {
