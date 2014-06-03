@@ -5,8 +5,8 @@ public class ServerConfig
   {
     //server info
     //public static final int serverIp = 123457890; //not known yet
-    public static final int serverPort = 8080;
-    public static final int controlPort = 8081;
+    public static final int serverPort = 8000;
+    public static final int controlPort = 8001;
     
     //database info
     public static final String databaseHost = "jdbc:mysql://databases.avans.nl";
