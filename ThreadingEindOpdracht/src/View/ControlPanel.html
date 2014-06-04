@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <head>
         <title>Control Panel</title>
@@ -16,6 +12,7 @@ and open the template in the editor.
             var webroot;
             var defaultpage;
             var selected;
+            var server = 'localhost:8001/';
 
             function getLog()
             {
@@ -33,7 +30,7 @@ and open the template in the editor.
 
                 //TODO submit naar server
                 $.ajax({
-                    url: 'localhost:8001',
+                    url: server,
                     type: 'PUT',
                     data: {webport: webport,
                         controlport: controlport,
@@ -53,7 +50,7 @@ and open the template in the editor.
             {
                 //TODO get variables van server
                 $.ajax({
-                    url: '',
+                    url: server,
                     type: 'GET',
                     success: function(result) {
                         alert('Form get');

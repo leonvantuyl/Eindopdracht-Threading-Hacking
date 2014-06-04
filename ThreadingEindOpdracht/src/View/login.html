@@ -5,16 +5,39 @@
         <title>Webserver control</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            var server = "localhost:8000/";
+            
+            function login()
+            {
+                username = document.getElementById("username").value;
+                password = document.getElementById("password").value;
+
+                $.ajax({
+                    url: server + 'login',
+                    type: 'POST',
+                    data: { username: username,
+                            password: password},
+                    success: function(result) {
+                        alert('Form submitted');
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        alert('post request failed');
+                    }
+                });
+            }
+        </script>
     </head>
     <body>
         <div>Welcome to the server!
         
-            <form action="login()">
+            <form onsubmit="login();">
                 Username:
-                <input type="text" name="username" size="200" />
+                <input type="text" id="username" size="200" />
                 Password:
-                <input type="password" name="password" size="200" />
-                <input type="submit" name="loginButton" />
+                <input type="password" id="password" size="200" />
+                <input type="submit" id="loginButton" />
             </form>
         </div>
     </body>
