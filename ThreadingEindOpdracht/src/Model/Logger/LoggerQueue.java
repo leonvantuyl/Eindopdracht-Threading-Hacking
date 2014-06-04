@@ -19,16 +19,19 @@ public class LoggerQueue
 
     public void writeToLog(String message) throws InterruptedException
       {
+        slots_available.acquire();
         queueLock.acquire();
         log[freeSpot] = message;
         freeSpot++;
         queueLock.release();
+        goods_available.release();
       }
 
     public String getFromLog() throws InterruptedException
       {
         String logMessage = "";
         
+        goods_available.acquire();
         queueLock.acquire();
         logMessage = log[0];
 
@@ -40,7 +43,8 @@ public class LoggerQueue
         queueLock.release();
 
         freeSpot--;
-
+        slots_available.release();
+        
         return logMessage;
       }
   }
