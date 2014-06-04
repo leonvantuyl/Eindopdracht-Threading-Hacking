@@ -21,7 +21,7 @@ public class AuthModel
         String salt = getSalt(username);
         String inputPass = hashPass(password, salt);
         String databasePass = null;
-        String token = null;
+        String token;
         
         String query = "SELECT password FROM user WHERE username = ?" ;
         PreparedStatement statement;

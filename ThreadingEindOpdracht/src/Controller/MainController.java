@@ -1,14 +1,21 @@
 package Controller;
 
-import static Constanses.ServerConfig.*;
+import Model.ControlServer.ControlServer;
+import Model.Logger.Logger;
 import Model.WebServer.WebServer;
 
 public class MainController
   {
-    private WebServer webserver;
-    
+
     public MainController()
       {
-        webserver = new WebServer(serverPort);
+        startServers();
+      }
+
+    private void startServers()
+      {
+        (new Thread(new WebServer())).start();
+        (new Thread(new ControlServer())).start();
+        (new Thread(new Logger())).start();
       }
   }
