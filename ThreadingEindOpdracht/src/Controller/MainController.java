@@ -16,6 +16,5 @@ public class MainController
       {
         (new Thread(new WebServer())).start();
         (new Thread(new ControlServer())).start();
-        (new Thread(new Logger())).start();
       }
   }
