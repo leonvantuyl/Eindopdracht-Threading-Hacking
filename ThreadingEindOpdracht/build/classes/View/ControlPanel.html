@@ -21,42 +21,28 @@
 
             function postFormInfo()
             {
+                alert("config updated");
                 webport = document.getElementById("webport").value;
                 controlport = document.getElementById("controlport").value;
                 webroot = document.getElementById("webroot").value;
                 defaultpage = document.getElementById("defaultpage").value;
                 selected = document.getElementById("dirbrowsing").checked;
+                //var data = webport + "$" + controlport + "$" + webroot + "$" + defaultpage + "$" + selected;
+                var data = "test";
+                httpPost(server + '/configPost', data);
 
-
-                //TODO submit naar server
-                /*
-                 $.ajax({
-                 url: server,
-                 type: 'PUT',
-                 data: {webport: webport,
-                 controlport: controlport,
-                 webroot: webroot,
-                 defaultpage: defaultpage,
-                 selected: selected},
-                 success: function(result) {
-                 alert('Form submitted');
-                 },
-                 error: function(xhr, textStatus, errorThrown) {
-                 alert('put request failed');
-                 }
-                 }); */
             }
 
             function createFormInfo()
             {
                 var info = httpGet(server + '/config');
                 var res = info.split("$");
-                webport = res[1];
-                controlport = res[2];
-                webroot = res[3];
-                defaultpage = res[4];
-                selected = res[5];
-                
+                webport = res[0];
+                controlport = res[1];
+                webroot = res[2];
+                defaultpage = res[3];
+                selected = res[4];
+
                 document.getElementById("webport").value = webport;
                 document.getElementById("controlport").value = controlport;
                 document.getElementById("webroot").value = webroot;
@@ -73,6 +59,23 @@
                 return xmlHttp.responseText;
             }
 
+            function httpPost(url, data)
+            {
+
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("POST", url, true);
+                //Send the proper header information along with the request
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", data.length);
+                xmlHttp.setRequestHeader("Connection", "close");
+
+                xmlHttp.onreadystatechange = function() {//Call a function when the state changes.
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        alert(xmlHttp.responseText);
+                    }
+                }
+                xmlHttp.send(data);
+            }
         </script>
     </head>
 
@@ -80,13 +83,13 @@
         <div>
             <h1> Control Panel </h1> 
 
-            <form name="myForm" onsubmit="return postFormInfo();" method="get">                
+            <form name="myForm" onsubmit="return false" method="get">                
                 Web Port: <input type="text" id="webport" value="loading..."><br>
                 Control Port: <input type="text" id="controlport" value="loading..."><br>
                 Web root: <input type="text" id="webroot" value="loading..."><br>
                 Default page: <input type="text" id="defaultpage" value="loading..."><br>
                 Directory browsing <input type="checkbox" id="dirbrowsing"><br>
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit" onclick="postFormInfo();">
             </form> 
             <script>
                 createFormInfo();
