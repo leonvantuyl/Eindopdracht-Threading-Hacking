@@ -5,6 +5,8 @@ public class ServerConfig
   {
     //server info
     //public static final int serverIp = localhost;
+    
+    //Info die de controlpanel kan aanpassen
     public static int serverPort = 8000;
     public static int controlPort = 8001;
     public static String webRoot = "c:/webserver/webroot";
@@ -18,5 +20,10 @@ public class ServerConfig
     public static final String databaseUsername = "gagpvenn";
     public static final String databasePassword = "123abc456789"; 
     
+    public static String getInfo()
+    {
+        String info = serverPort + "$" + controlPort + "$" + webRoot + "$" + defaultpage + "$" + directoryBrowsing.toString();        
+        return info;
+    }
 
   }

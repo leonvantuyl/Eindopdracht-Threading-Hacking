@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <head>
         <title>Control Panel</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
         <script type="text/javascript">
             var webport;
             var controlport;
             var webroot;
             var defaultpage;
             var selected;
+            var server = document.URL;
 
             function getLog()
             {
                 alert('TODO ga naar log scherm');
             }
 
-            function putFormInfo()
+            function postFormInfo()
             {
                 webport = document.getElementById("webport").value;
                 controlport = document.getElementById("controlport").value;
@@ -32,42 +29,50 @@ and open the template in the editor.
 
 
                 //TODO submit naar server
-                $.ajax({
-                    url: 'localhost:8001',
-                    type: 'PUT',
-                    data: {webport: webport,
-                        controlport: controlport,
-                        webroot: webroot,
-                        defaultpage: defaultpage,
-                        selected: selected},
-                    success: function(result) {
-                        alert('Form submitted');
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('put request failed');
-                    }
-                });
+                /*
+                 $.ajax({
+                 url: server,
+                 type: 'PUT',
+                 data: {webport: webport,
+                 controlport: controlport,
+                 webroot: webroot,
+                 defaultpage: defaultpage,
+                 selected: selected},
+                 success: function(result) {
+                 alert('Form submitted');
+                 },
+                 error: function(xhr, textStatus, errorThrown) {
+                 alert('put request failed');
+                 }
+                 }); */
             }
 
             function createFormInfo()
             {
-                //TODO get variables van server
-                $.ajax({
-                    url: '',
-                    type: 'GET',
-                    success: function(result) {
-                        alert('Form get');
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('get request failed');
-                    }
-                });
+                var info = httpGet(server + '/config');
+                var res = info.split("$");
+                webport = res[1];
+                controlport = res[2];
+                webroot = res[3];
+                defaultpage = res[4];
+                selected = res[5];
+                
                 document.getElementById("webport").value = webport;
                 document.getElementById("controlport").value = controlport;
                 document.getElementById("webroot").value = webroot;
                 document.getElementById("defaultpage").value = defaultpage;
                 document.getElementById("dirbrowsing").checked = selected;
             }
+
+            function httpGet(theUrl)
+            {
+                var xmlHttp = null;
+                xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", theUrl, false);
+                xmlHttp.send(null);
+                return xmlHttp.responseText;
+            }
+
         </script>
     </head>
 
@@ -75,17 +80,18 @@ and open the template in the editor.
         <div>
             <h1> Control Panel </h1> 
 
-            <form name="myForm" onsubmit="return putFormInfo();" method="get">                
-                Web Port: <input type="text" id="webport" value=""><br>
-                Control Port: <input type="text" id="controlport" value=""><br>
-                Web root: <input type="text" id="webroot" value=""><br>
-                Default page: <input type="text" id="defaultpage" value=""><br>
+            <form name="myForm" onsubmit="return postFormInfo();" method="get">                
+                Web Port: <input type="text" id="webport" value="loading..."><br>
+                Control Port: <input type="text" id="controlport" value="loading..."><br>
+                Web root: <input type="text" id="webroot" value="loading..."><br>
+                Default page: <input type="text" id="defaultpage" value="loading..."><br>
                 Directory browsing <input type="checkbox" id="dirbrowsing"><br>
                 <input type="submit" value="Submit">
             </form> 
             <script>
                 createFormInfo();
             </script>
+
 
             <form onsubmit="getLog();">
                 <input type="submit" value="logfile">

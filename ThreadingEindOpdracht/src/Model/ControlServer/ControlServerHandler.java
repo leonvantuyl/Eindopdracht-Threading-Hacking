@@ -1,5 +1,6 @@
 package Model.ControlServer;
 
+import Constanses.ServerConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -36,17 +37,25 @@ public class ControlServerHandler implements Runnable
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\login.html");
                     Loadpage(file);
                   }
-                case "/login":
+                break;
+                case "/controlPanel":
                   {
-                    //check login
+                    //TODO check login
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\ControlPanel.html");
                     Loadpage(file);
                   }
+                break;
+                case "/controlPanel/config":
+                  {
+                    sendConfigInfo();
+                  }
+                break;
                 default:
                   {
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\404.html");
                     Loadpage(file);
                   }
+                break;
               }
 
             socket.close();
@@ -63,8 +72,10 @@ public class ControlServerHandler implements Runnable
         BufferedReader bufReader = null;
         bufReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String inputLine;
+        System.out.println("http output:");
         while (!(inputLine = bufReader.readLine()).equals(""))
           {
+              System.out.println(inputLine);
             if (inputLine.startsWith("GET"))
               {
                 String[] parts = inputLine.split(" ");
@@ -80,12 +91,28 @@ public class ControlServerHandler implements Runnable
         socket.isInputShutdown();
       }
 
-    private boolean Loadpage(File file)
+    private void Loadpage(File file)
       {
         try
           {
             //TODO check wat de delimiter doet
             String text = new Scanner(file).useDelimiter("\\A").next();
+            PrintWriter out = new PrintWriter(socket.getOutputStream());            
+            out.write(text);
+            out.close();
+
+          }
+        catch (IOException ex)
+          {
+            Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      }
+
+    private void sendConfigInfo() {
+        try
+          {
+            //TODO check wat de delimiter doet
+            String text = ServerConfig.getInfo();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.write(text);
             out.close();
@@ -95,6 +122,5 @@ public class ControlServerHandler implements Runnable
           {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
           }
-        return false;
-      }
+    }
   }
