@@ -28,7 +28,7 @@
                 defaultpage = document.getElementById("defaultpage").value;
                 selected = document.getElementById("dirbrowsing").checked;
                 //var data = webport + "$" + controlport + "$" + webroot + "$" + defaultpage + "$" + selected;
-                var data = "test";
+                var data = webport + "," + controlport + "," + webroot + "," + defaultpage + "," + selected;
                 httpPost(server + '/configPost', data);
 
             }
@@ -73,7 +73,7 @@
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                         alert(xmlHttp.responseText);
                     }
-                }
+                };
                 xmlHttp.send(data);
             }
         </script>
