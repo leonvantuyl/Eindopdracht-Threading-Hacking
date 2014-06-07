@@ -4,16 +4,18 @@ import Model.AuthModel;
 
 public class AuthController
   {
+
     private final AuthModel authModel;
-    
+
     public AuthController()
       {
         authModel = new AuthModel();
       }
-    
-    public void login(String username, String password)
+
+    public String login(String username, String password)
       {
-        authModel.login(username, password);
+        String token = authModel.login(username, password);
+        return token;
       }
 
     public void logout()

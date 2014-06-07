@@ -1,6 +1,7 @@
 package Model.ControlServer;
 
 import Constanses.ServerConfig;
+import Controller.AuthController;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.CharBuffer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +18,7 @@ public class ControlServerHandler implements Runnable
 
     private final Socket socket;
     private String userRequestUrl;
-    private String data;
+    private String body;
 
     public ControlServerHandler(Socket socket)
       {
@@ -43,9 +43,22 @@ public class ControlServerHandler implements Runnable
                 break;
                 case "/controlPanel":
                   {
-                    //TODO check login
-                    File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\ControlPanel.html");
-                    Loadpage(file);
+                    AuthController authController = new AuthController();
+
+                    String[] loginInfo = body.split(",");
+                    String token = authController.login(loginInfo[0], loginInfo[1]);
+
+                    if (token != null)
+                      {
+                        //send token back to user
+                        File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\ControlPanel.html");
+                        Loadpage(file);
+                      }
+                    else
+                      {
+                        //faild send error page
+                      }
+
                   }
                 break;
                 case "/controlPanel/config":
@@ -81,9 +94,7 @@ public class ControlServerHandler implements Runnable
         InputStream is = socket.getInputStream();
         bufReader = new BufferedReader(new InputStreamReader(is));
         String inputLine;
-        StringBuilder rawBody = new StringBuilder();
         int contentLength = 0;
-        boolean done = false;
 
         while (!(inputLine = bufReader.readLine()).equals(""))
           {
@@ -101,14 +112,15 @@ public class ControlServerHandler implements Runnable
                 contentLength = Integer.parseInt(len);
               }
           }
-        byte[] bytes = new byte[contentLength];
-        for (int i = 0; i < contentLength; i++)
+        if (contentLength > 0)
           {
-            bytes[i] = (byte) bufReader.read();
+            byte[] bytes = new byte[contentLength];
+            for (int i = 0; i < contentLength; i++)
+              {
+                bytes[i] = (byte) bufReader.read();
+              }
+            body = new String(bytes);
           }
-        String body = new String(bytes);
-          System.out.println(body);
-        
       }
 
     private void Loadpage(File file)
@@ -147,6 +159,8 @@ public class ControlServerHandler implements Runnable
     private void postConfigInfo() throws IOException
       {
         System.out.println("yo");
+        String[] newServerInfo = body.split(",");
+        ServerConfig.setInfo(newServerInfo);
       }
 
   }
