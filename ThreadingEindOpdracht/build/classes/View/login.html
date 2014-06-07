@@ -7,37 +7,43 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript">
-            var server = "localhost:8000/";
-            
+            var server = document.URL;
+
             function login()
             {
-                username = document.getElementById("username").value;
-                password = document.getElementById("password").value;
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                var data = username + "," + password;
+                httpPost(server + 'login', data);
+            }
+            
+             function httpPost(url, data)
+            {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("POST", url, true);
+                //Send the proper header information along with the request
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", data.length);
+                xmlHttp.setRequestHeader("Connection", "close");
 
-                $.ajax({
-                    url: server + 'login',
-                    type: 'POST',
-                    data: { username: username,
-                            password: password},
-                    success: function(result) {
-                        alert('Form submitted');
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('post request failed');
+                xmlHttp.onreadystatechange = function() {//Call a function when the state changes.
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        alert(xmlHttp.responseText);
                     }
-                });
+                };
+                xmlHttp.send(data);
             }
         </script>
     </head>
     <body>
         <div>Welcome to the server!
-        
-            <form onsubmit="login();">
+
+            <form onsubmit="return false">
                 Username:
                 <input type="text" id="username" size="200" />
                 Password:
                 <input type="password" id="password" size="200" />
-                <input type="submit" id="loginButton" />
+                <input type="submit" id="loginButton" onclick="login();" />
             </form>
         </div>
     </body>

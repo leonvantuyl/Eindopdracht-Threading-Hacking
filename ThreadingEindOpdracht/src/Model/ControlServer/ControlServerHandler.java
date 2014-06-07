@@ -41,13 +41,13 @@ public class ControlServerHandler implements Runnable
                     Loadpage(file);
                   }
                 break;
-                case "/controlPanel":
+                case "/login":
                   {
                     AuthController authController = new AuthController();
-
+                    
                     String[] loginInfo = body.split(",");
                     String token = authController.login(loginInfo[0], loginInfo[1]);
-
+                    
                     if (token != null)
                       {
                         //send token back to user
@@ -58,7 +58,6 @@ public class ControlServerHandler implements Runnable
                       {
                         //faild send error page
                       }
-
                   }
                 break;
                 case "/controlPanel/config":
