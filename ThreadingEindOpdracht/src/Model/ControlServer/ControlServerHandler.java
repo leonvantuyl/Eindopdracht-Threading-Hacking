@@ -28,7 +28,6 @@ public class ControlServerHandler implements Runnable {
         System.out.println("new control server");
         try {
             readHeader();
-
             switch (userRequestUrl) {
                 case "/": {
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\login.html");
@@ -68,12 +67,11 @@ public class ControlServerHandler implements Runnable {
                 }
                 break;
             }
-
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
 
     private void readHeader() throws IOException {
@@ -109,8 +107,7 @@ public class ControlServerHandler implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print(text);
             out.flush();
-            out.close();
-            socket.close();
+            out.close();          
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -126,7 +123,6 @@ public class ControlServerHandler implements Runnable {
             out.print(text);
             out.flush();
             out.close();
-            socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -140,9 +136,7 @@ public class ControlServerHandler implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print("succes");
             out.flush();
-            out.close();
-            socket.close();
-            
+            out.close();            
     }
 
 }
