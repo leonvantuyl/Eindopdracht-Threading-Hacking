@@ -14,26 +14,24 @@ import java.util.logging.Logger;
 public class AuthModel
   {
 
-    private final StringBuilder stringBuilder = new StringBuilder();
-
     public String login(String username, String password)
       {
         String salt = getSalt(username);
         String inputPass = hashPass(password, salt);
         String databasePass = null;
         String token;
-        
-        String query = "SELECT password FROM user WHERE username = ?" ;
+
+        String query = "SELECT password FROM user WHERE username = ?";
         PreparedStatement statement;
-        
+
         try
           {
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.executeQuery();
-            
+
             ResultSet result = statement.getResultSet();
-             
+
             while (result.next())
               {
                 databasePass = result.getString("password");
@@ -43,8 +41,8 @@ public class AuthModel
           {
             Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
           }
-        
-        if(databasePass.equals(inputPass))
+
+        if (databasePass.equals(inputPass))
           {
             token = createToken();
           }
@@ -52,7 +50,7 @@ public class AuthModel
           {
             token = null;
           }
-        
+
         return token;
       }
 
@@ -88,17 +86,21 @@ public class AuthModel
       {
         String oldpass = (password + salt);
         String hashedPass = null;
+        StringBuilder sb = new StringBuilder();
+
         try
           {
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            byte[] hash = digest.digest(oldpass.getBytes("UTF-8"));
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(oldpass.getBytes("UTF-8"));
+
+            byte[] hash = md.digest();
 
             for (int i = 0; i < hash.length; i++)
               {
-                stringBuilder.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
+                sb.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
               }
 
-            hashedPass = stringBuilder.toString();
+            hashedPass = sb.toString();
           }
         catch (NoSuchAlgorithmException | UnsupportedEncodingException ex)
           {
@@ -114,22 +116,23 @@ public class AuthModel
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[20];
         random.nextBytes(bytes);
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < bytes.length; i++)
           {
-            stringBuilder.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
           }
 
-        String salt = stringBuilder.toString();
+        String salt = sb.toString();
         return salt;
       }
 
     private String getSalt(String username)
       {
-        String query = "SELECT salt FROM user WHERE username = ?" ;
+        String query = "SELECT salt FROM user WHERE username = ?";
         String salt = "";
         PreparedStatement statement;
-        
+
         try
           {
             statement = connection.prepareStatement(query);
@@ -149,20 +152,21 @@ public class AuthModel
           }
         return salt;
       }
-    
+
     private String createToken()
       {
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[10];
         random.nextBytes(bytes);
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < bytes.length; i++)
           {
-            stringBuilder.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
           }
 
-        String token = stringBuilder.toString();
-       
+        String token = sb.toString();
+
         return token;
       }
   }
