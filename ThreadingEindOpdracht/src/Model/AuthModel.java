@@ -42,7 +42,7 @@ public class AuthModel
             Logger.getLogger(AuthModel.class.getName()).log(Level.SEVERE, null, ex);
           }
 
-        if (databasePass.equals(inputPass))
+        if (databasePass != null && databasePass.equals(inputPass))
           {
             token = createToken();
           }
