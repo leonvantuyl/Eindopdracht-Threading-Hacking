@@ -21,16 +21,13 @@
 
             function postFormInfo()
             {
-                alert("config updated");
                 webport = document.getElementById("webport").value;
                 controlport = document.getElementById("controlport").value;
                 webroot = document.getElementById("webroot").value;
                 defaultpage = document.getElementById("defaultpage").value;
                 selected = document.getElementById("dirbrowsing").checked;
-                //var data = webport + "$" + controlport + "$" + webroot + "$" + defaultpage + "$" + selected;
                 var data = webport + "," + controlport + "," + webroot + "," + defaultpage + "," + selected;
                 httpPost(server + 'configPost', data);
-
             }
 
             function createFormInfo()

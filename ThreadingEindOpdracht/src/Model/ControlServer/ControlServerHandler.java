@@ -107,8 +107,10 @@ public class ControlServerHandler implements Runnable {
         try {
             String text = new Scanner(file).useDelimiter("\\A").next();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.write(text);
+            out.print(text);
+            out.flush();
             out.close();
+            socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,7 +123,7 @@ public class ControlServerHandler implements Runnable {
             String text = ServerConfig.getInfo();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             
-            out.println(text);
+            out.print(text);
             out.flush();
             out.close();
             socket.close();
@@ -134,6 +136,13 @@ public class ControlServerHandler implements Runnable {
     private void postConfigInfo() throws IOException {
         String[] newServerInfo = body.split(",");
         ServerConfig.setInfo(newServerInfo);
+        
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            out.print("succes");
+            out.flush();
+            out.close();
+            socket.close();
+            
     }
 
 }
