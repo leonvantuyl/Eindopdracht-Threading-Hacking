@@ -5,7 +5,6 @@
         <title>Webserver control</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript">
             var server = document.URL;
 
@@ -29,17 +28,20 @@
                 xmlHttp.onreadystatechange = function() {//Call a function when the state changes.
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                         alert(xmlHttp.responseText);
+                        document.open();
+                        document.write(xmlHttp.responseText);
+                        document.close();
                     }
                 };
                 xmlHttp.send(data);
-                window.location.reload();
+                
             }
         </script>
     </head>
     <body>
         <div>Welcome to the server!
 
-            <form onsubmit="return true">
+            <form onsubmit="return false">
                 Username:
                 <input type="text" id="username" size="200" />
                 Password:

@@ -120,17 +120,7 @@ public class ControlServerHandler implements Runnable {
             //TODO check wat de delimiter doet
             String text = ServerConfig.getInfo();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            /*
-            out.print(text);
-            out.flush();
-            out.close();
-            socket.close();
-                    */
-
-            out.println("HTTP/1.1 200 OK");
-            out.println("Content-Type: text/html");
-            out.println("Content-Length: " + text.length());
-            out.println();
+            
             out.println(text);
             out.flush();
             out.close();
