@@ -37,8 +37,18 @@ public class WebRequestHandler implements Runnable {
             switch (userRequestUrl) {
                 case "/": {
                     //Hier is het een string omdat de pagina dynamisch word gemaakt.
-                    String file = createIndex();
-                    Loadpage(file, "200 OK");
+                    String firstPage = ServerConfig.getdefaultpage();
+                    if (firstPage.equals("index.html")) {
+                        String file = createIndex();
+                        Loadpage(file, "200 OK");
+                    } else {
+                        File file = new File(ServerConfig.getwebRoot() + "/" + firstPage);
+                        if(file != null)
+                        {
+                            Loadpage(file, "200 OK");                        
+                        }
+                       
+                    }
                 }
                 break;
                 case "/favicon.ico":
@@ -60,6 +70,8 @@ public class WebRequestHandler implements Runnable {
             }
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         logInfo();
     }
@@ -83,7 +95,7 @@ public class WebRequestHandler implements Runnable {
         }
     }
 
-    public String createIndex() {
+    public String createIndex() throws InterruptedException {
         String indexpage = null;
         StringBuilder sb = new StringBuilder();
         //standard pagina opzet
@@ -100,8 +112,8 @@ public class WebRequestHandler implements Runnable {
          per gevonde bestand maakt die een link aan.
          Als directorybrowsing uitstaat dan krijg je een melding te zien.
          */
-        if (ServerConfig.directoryBrowsing) {
-            String rootDir = ServerConfig.webRoot;
+        if (ServerConfig.getdirectoryBrowsing()) {
+            String rootDir = ServerConfig.getwebRoot();
             File[] webpages = finder(rootDir);
             sb.append("<ul>");
             for (int i = 0; i < webpages.length; i++) {
@@ -132,8 +144,15 @@ public class WebRequestHandler implements Runnable {
             out.flush();
             out.close();
 
-        } catch (IOException ex) {
-            Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {            
+            File errorfile = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\404.html");
+            if(!file.equals(errorfile))
+            {
+                 Loadpage(errorfile, "404 not found");
+            } else
+            {
+                Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex); 
+            }
         }
     }
 
@@ -158,9 +177,9 @@ public class WebRequestHandler implements Runnable {
         return dir.listFiles((File dir1, String filename) -> filename.endsWith(".html"));
     }
 
-    private File isAllowed(String userRequestUrl) {
+    private File isAllowed(String userRequestUrl) throws InterruptedException {
         File allowed = null;
-        String root = ServerConfig.webRoot;
+        String root = ServerConfig.getwebRoot();
         File[] webpages = finder(root);
         for (int i = 0; i < webpages.length; i++) {
             String name = "/" + webpages[i].getName();

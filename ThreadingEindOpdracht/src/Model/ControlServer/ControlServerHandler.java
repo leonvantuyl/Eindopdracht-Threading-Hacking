@@ -72,6 +72,8 @@ public class ControlServerHandler implements Runnable {
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -139,7 +141,7 @@ public class ControlServerHandler implements Runnable {
         }
     }
 
-    private void postConfigInfo() throws IOException {
+    private void postConfigInfo() throws IOException, InterruptedException {
         String[] newServerInfo = body.split(",");
         ServerConfig.setInfo(newServerInfo);
 

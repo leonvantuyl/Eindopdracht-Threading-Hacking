@@ -1,6 +1,7 @@
 package Model.WebServer;
 
-import static Constanses.ServerConfig.serverPort;
+
+import Constanses.ServerConfig;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,7 +26,7 @@ public class WebServer implements Runnable
       {
         try
           {
-            ServerSocket webServerSocket = new ServerSocket(serverPort);
+            ServerSocket webServerSocket = new ServerSocket(ServerConfig.getserverPort());
 
             while (true)
               {
@@ -37,6 +38,8 @@ public class WebServer implements Runnable
         catch (IOException ex)
           {
             Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, ex);
-          }
+          } catch (InterruptedException ex) {
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
   }

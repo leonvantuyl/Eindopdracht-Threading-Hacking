@@ -1,6 +1,6 @@
 package Model.ControlServer;
 
-import static Constanses.ServerConfig.controlPort;
+import Constanses.ServerConfig;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,7 +26,7 @@ public class ControlServer implements Runnable
       {
         try
           {
-            ServerSocket controlServerSocket = new ServerSocket(controlPort);
+            ServerSocket controlServerSocket = new ServerSocket(ServerConfig.getcontrolPort());
 
             while (true)
               {
@@ -38,6 +38,8 @@ public class ControlServer implements Runnable
         catch (IOException ex)
           {
             Logger.getLogger(ControlServer.class.getName()).log(Level.SEVERE, null, ex);
-          }
+          } catch (InterruptedException ex) {
+            Logger.getLogger(ControlServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
   }
