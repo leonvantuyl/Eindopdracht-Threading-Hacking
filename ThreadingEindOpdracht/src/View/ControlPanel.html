@@ -29,13 +29,13 @@
                 selected = document.getElementById("dirbrowsing").checked;
                 //var data = webport + "$" + controlport + "$" + webroot + "$" + defaultpage + "$" + selected;
                 var data = webport + "," + controlport + "," + webroot + "," + defaultpage + "," + selected;
-                httpPost(server + '/configPost', data);
+                httpPost(server + 'configPost', data);
 
             }
 
             function createFormInfo()
             {
-                var info = httpGet(server + '/config');
+                var info = httpGet(server + 'config');
                 var res = info.split("$");
                 webport = res[0];
                 controlport = res[1];

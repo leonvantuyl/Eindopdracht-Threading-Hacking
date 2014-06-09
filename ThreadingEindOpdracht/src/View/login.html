@@ -27,6 +27,7 @@
 
                 xmlHttp.onreadystatechange = function() {//Call a function when the state changes.
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        //vervang de huidige pagina
                         document.open();
                         document.write(xmlHttp.responseText);
                         document.close();

@@ -47,18 +47,18 @@ public class ControlServerHandler implements Runnable {
                         Loadpage(file);
                     } else {
                         //failed send error page
-                        File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\ControlPanel.html");
+                        File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\loginInvalid.html");
                         //  File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\loginInvalid.html");
                         Loadpage(file);
 
                     }
                 }
                 break;
-                case "/controlPanel/config": {
+                case "/config": {
                     sendConfigInfo();
                 }
                 break;
-                case "/controlPanel/configPost": {
+                case "/configPost": {
                     postConfigInfo();
                 }
                 break;
