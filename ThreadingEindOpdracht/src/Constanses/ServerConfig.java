@@ -6,6 +6,7 @@ public class ServerConfig
     //public static final int serverIp = localhost;
 
     //Info die de controlpanel kan aanpassen
+    //TODO Hier getter en setters voor maken met semaphore. anders gaat dat fout met threads.
     public static int serverPort = 8000;
     public static int controlPort = 8001;
     public static String webRoot = "c:/webserver/webroot";
