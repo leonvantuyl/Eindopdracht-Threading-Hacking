@@ -30,7 +30,7 @@ public class WebRequestHandler implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("new connection");
+        System.out.println("new web connection");
 
         try {
             readHeader();
@@ -38,20 +38,23 @@ public class WebRequestHandler implements Runnable {
                 case "/": {
                     //Hier is het een string omdat de pagina dynamisch word gemaakt.
                     String file = createIndex();
-                    Loadpage(file);
+                    Loadpage(file, "200 OK");
                 }
                 break;
-                    case "/favicon.ico":
-                        break;
+                case "/favicon.ico":
+                    break;
                 default: {
                     File file = null;
+                    String response = null;
                     File isAllowed = isAllowed(userRequestUrl);
                     if (isAllowed != null) {
                         file = isAllowed;
+                        response = "200 OK";
                     } else {
                         file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\404.html");
+                        response = "404 Not Found";
                     }
-                    Loadpage(file);
+                    Loadpage(file, response);
                 }
                 break;
             }
@@ -117,27 +120,33 @@ public class WebRequestHandler implements Runnable {
         return indexpage;
     }
 
-    private void Loadpage(File file) {
+    private void Loadpage(File file, String response) {
         try {
             String text = new Scanner(file).useDelimiter("\\A").next();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.print(text);
+            out.println("HTTP/1.1 " + response);
+            out.println("Content-Type: text/html");
+            out.println("Content-Length: " + text.length());
+            out.println();
+            out.println(text);
             out.flush();
             out.close();
-            socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void Loadpage(String text) {
+    private void Loadpage(String text, String response) {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.print(text);
+            out.println("HTTP/1.1 " + response);
+            out.println("Content-Type: text/html");
+            out.println("Content-Length: " + text.length());
+            out.println();
+            out.println(text);
             out.flush();
             out.close();
-            socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);

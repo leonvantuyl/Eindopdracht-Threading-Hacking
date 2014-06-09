@@ -25,13 +25,13 @@ public class ControlServerHandler implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("new control server");
+        System.out.println("new control connection");
         try {
             readHeader();
             switch (userRequestUrl) {
                 case "/": {
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\login.html");
-                    Loadpage(file);
+                    Loadpage(file, "200 OK");
                 }
                 break;
                 case "/login": {
@@ -43,12 +43,12 @@ public class ControlServerHandler implements Runnable {
                     if (token != null) {
                         //send token back to user
                         File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\ControlPanel.html");
-                        Loadpage(file);
+                        Loadpage(file, "200 OK");
                     } else {
                         //failed send error page
                         File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\loginInvalid.html");
                         //  File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\loginInvalid.html");
-                        Loadpage(file);
+                        Loadpage(file, "404 Not Found");
 
                     }
                 }
@@ -57,13 +57,15 @@ public class ControlServerHandler implements Runnable {
                     sendConfigInfo();
                 }
                 break;
+                case "/favicon.ico":
+                    break;
                 case "/configPost": {
                     postConfigInfo();
                 }
                 break;
                 default: {
                     File file = new File(new java.io.File("").getAbsolutePath() + "\\src\\View\\error\\404.html");
-                    Loadpage(file);
+                    Loadpage(file, "404 Not Found");
                 }
                 break;
             }
@@ -71,7 +73,7 @@ public class ControlServerHandler implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     private void readHeader() throws IOException {
@@ -101,13 +103,17 @@ public class ControlServerHandler implements Runnable {
         }
     }
 
-    private void Loadpage(File file) {
+    private void Loadpage(File file, String response) {
         try {
             String text = new Scanner(file).useDelimiter("\\A").next();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.print(text);
+            out.println("HTTP/1.1 " + response);
+            out.println("Content-Type: text/html");
+            out.println("Content-Length: " + text.length());
+            out.println();
+            out.println(text);
             out.flush();
-            out.close();          
+            out.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ControlServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -119,8 +125,12 @@ public class ControlServerHandler implements Runnable {
             //TODO check wat de delimiter doet
             String text = ServerConfig.getInfo();
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-            
-            out.print(text);
+
+            out.println("HTTP/1.1 200 OK");
+            out.println("Content-Type: text/String");
+            out.println("Content-Length: " + text.length());
+            out.println();
+            out.println(text);
             out.flush();
             out.close();
 
@@ -132,11 +142,17 @@ public class ControlServerHandler implements Runnable {
     private void postConfigInfo() throws IOException {
         String[] newServerInfo = body.split(",");
         ServerConfig.setInfo(newServerInfo);
-        
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.print("succes");
-            out.flush();
-            out.close();            
+
+        String text = "succes";
+        PrintWriter out = new PrintWriter(socket.getOutputStream());
+        out.println("HTTP/1.1 200 OK");
+        out.println("Content-Type: text/String");
+        out.println("Content-Length: " + text.length());
+        out.println();
+        out.println(text);
+
+        out.flush();
+        out.close();
     }
 
 }
